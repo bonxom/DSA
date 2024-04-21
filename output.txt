@@ -1,0 +1,9 @@
+A, B, E, G, F, C, D, K, H, 
+G, E, F, B, C, K, H, D, A, 
+NULL
+Height: 3
+Depth E: 2
+Nodes: 9
+G F C K H 
+Leaves: 5
+Parent is B 

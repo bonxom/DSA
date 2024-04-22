@@ -27,8 +27,8 @@ void generate(){
 }
 
 int main(){
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
 	cin >> n;
 	createfl();
 	generate();

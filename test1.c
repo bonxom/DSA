@@ -149,8 +149,8 @@ TNode *Parent(TNode *root, char label){
 }
 
 int main(){
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
+    // freopen("input.txt", "r", stdin);
+    // freopen("output.txt", "w", stdout);
 
     TNode* root =  initTree();
     preOrder(root);

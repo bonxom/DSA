@@ -5,7 +5,7 @@ int n, m;
 pair <int, int> obj[1000];
 int value = 0, max_value = INT_MIN;
 int a[1000], took[1000], solution[1000];
-int cnt = 0, weight = 0, num = 0, res_weight = 0;
+int cnt = 0, weight = 0, num = 0, res_weight = 0; 
 
 void NewRes(int a[]){
     for (int i = 1; i <= num; i++){

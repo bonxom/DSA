@@ -32,7 +32,7 @@ void makeChild(TNode* root, char label){ //tạo anh họ ở ngoài cùng cho r
 }
 
 TNode* initTree(){
-    TNode* root = makeNode('A'); /// gốc A, có 3 con A, B, C
+    TNode* root = makeNode('A'); /// gốc A, có 3 con B, C, D
     makeChild(root, 'B');
     makeChild(root, 'C');
     makeChild(root, 'D');

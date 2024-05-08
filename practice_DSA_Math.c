@@ -355,12 +355,22 @@ struct Node* multiplyPolynomialWithNode(struct Node* head, struct Node* multipli
 {
 	// SINH VIÊN CODE TẠI ĐÂY
     struct Node *current = head;
+	struct Node *res = NULL, *last = NULL;
     while (current != NULL){
-        current->heSo *= multiplier->heSo;
-        current->soMu += multiplier->soMu;
+		struct Node *tmp = (struct Node*)malloc(sizeof(struct Node));
+        tmp->heSo = current->heSo * multiplier->heSo;
+        tmp->soMu = current->soMu + multiplier->soMu;
+		if (res == NULL){
+			res = tmp;
+			last = tmp;
+		}
+		else{
+			last->next = tmp;
+			last = last->next;
+		}
         current = current->next;
     }
-	return head;
+	return res;
 }
 
 /*

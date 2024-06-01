@@ -1,8 +1,10 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <cstdlib>
 using namespace std;
 
 struct TNode{
-    int key;
+    int key; 
     TNode* leftChild;
     TNode* rightChild;
 };
@@ -26,13 +28,17 @@ void insert(TNode *&root, int key){
     }
 }
 
-TNode *initTree(){
+TNode *initTree(){ // Khởi tạo cây ban đầu
     TNode *root = NULL;
     insert(root, 5);
     insert(root, 8);
     insert(root, 2);
     insert(root, 6);
-    insert(root, 10);
+    insert(root, 20);
+    insert(root, 23);
+    insert(root, 1); insert(root, 3);
+    insert(root, 22); insert(root, 7);
+    insert(root, 15); insert(root, 18); insert(root, 17); insert(root, 19);
     // TNode *tmp = root->leftChild;
     // tmp->key = 11;
     return root;
@@ -52,36 +58,20 @@ void inOder(TNode *root){
     inOder(root->rightChild);
 }
 
-bool find(TNode *root, int key){
+bool find(TNode *root, int key){///// trả về true false
     if (root == NULL) return false;
     if (root->key == key) return true;
     if (key < root->key) return find(root->leftChild, key);
     if (key > root->key) return find(root->rightChild, key);
+    return false;
 }
 
-TNode *search(TNode *root, int key){
+TNode *findNode(TNode *root, int key){ //// trả về Node nếu tìm được, ngược lại trả về NULL
     if (root == NULL) return NULL;
     if (root->key == key) return root;
-    if (key < root->key) return search(root->leftChild, key);
-    if (key > root->key) return search(root->rightChild, key);   
-}
-
-TNode *father = NULL;
-bool isLeftChild = true;
-
-TNode *search2(TNode *root, int key){// đi kèm việc tìm bố
-    if (root == NULL) return NULL;
-    if (root->key == key) return root;
-    if (key < root->key) {
-        father = root;
-        isLeftChild = true;
-        return search2(root->leftChild, key);
-    }
-    if (key > root->key){
-        father = root;
-        isLeftChild = false;
-        return search2(root->rightChild, key);   
-    } 
+    if (key < root->key) return findNode(root->leftChild, key);
+    if (key > root->key) return findNode(root->rightChild, key);   
+    return NULL;
 }
 
 bool isBST(TNode *root){
@@ -91,17 +81,81 @@ bool isBST(TNode *root){
     return isBST(root->leftChild) && isBST(root->rightChild);
 }
 
-void deleteNode(TNode *&root, int key){
-    TNode *tmp = search2(root, key);
-    if (tmp == NULL){
-        cout << "NOT EXIST" << endl; return;
+TNode *findParent(TNode *root, int key, bool &isLeftChild){/// trả về bố của node key
+                //// và trả về con trái hay phải thông qua truyền tham chiếu isLeftChild;
+    if (root == NULL) return NULL;
+    if (root->leftChild != NULL){
+        if (root->leftChild->key == key){
+            isLeftChild = true;
+            return root;
+        }
+        else{
+            TNode *res = findParent(root->leftChild, key, isLeftChild);
+            if (res != NULL) return res;
+        }
     }
-    if (tmp->leftChild == NULL && tmp->rightChild == NULL){
-        if (isLeftChild) father->leftChild = NULL;
-        else father->rightChild = NULL;
+    if (root->rightChild != NULL){
+        if (root->rightChild->key == key){
+            isLeftChild = false;
+            return root;
+        }
+        else{
+            TNode *res = findParent(root->rightChild, key, isLeftChild);
+            if (res != NULL) return res;
+        }
     }
-    free(tmp);
+    return NULL;
 }
+
+TNode *findMostLeft(TNode *root){// Tìm node trái nhất, tức là tìm Node có key min ấy
+    while (root->leftChild != NULL){
+        root = root->leftChild;
+    }
+    return root;
+}
+
+void deleteNode(TNode *& root, int key){ // có 4 TH xoá
+    TNode *position = findNode(root, key);
+    if (position == NULL){
+        cout << "Key Not Found!!! \n"; return;
+    }
+
+    bool isLeftChild = true;
+    TNode *parent = findParent(root, key, isLeftChild);
+    if (position->leftChild == NULL && position->rightChild == NULL){
+        cout << "Delete Leave\n";
+        if (isLeftChild) parent->leftChild = NULL;
+        else parent->rightChild = NULL;
+        free(position); return;
+    }
+
+    if (position->leftChild == NULL && position->rightChild != NULL){
+        cout << "Delete Node has only rightChild\n";
+        if (isLeftChild) parent->leftChild = position->rightChild;
+        else parent->rightChild = position->rightChild;
+        free(position); return;
+    }
+
+    if (position->leftChild != NULL && position->rightChild == NULL){
+        cout << "Delete Node has only leftChild\n";
+        if (isLeftChild) parent->leftChild = position->rightChild;
+        else parent->rightChild = position->rightChild;
+        free(position); return;
+    }
+
+    if (position->leftChild != NULL && position->rightChild != NULL){
+        cout << "Delete Node has 2 Children\n";
+        //Thay position->key bằng mostLeft->key in right branch
+        TNode *mostLeft = findMostLeft(position->rightChild);
+        position->key = mostLeft->key;
+        //Đưa rightChild của mostLeft lên thay mostLeft;
+        bool left = true;
+        TNode *parentOfMostleft = findParent(position, mostLeft->key, left);
+        parentOfMostleft->leftChild = mostLeft->rightChild;
+        free(mostLeft);
+    }
+}
+
 int main(){
     TNode *root = NULL;
     root = initTree();
@@ -110,7 +164,7 @@ int main(){
     if (find(root, 7)) cout << "FOUND!" << endl;
     else cout << "NOT FOUND!"<< endl;
 
-    TNode *tmp = search(root, 10);
+    TNode *tmp = findNode(root, 19);
     if (tmp == NULL) cout << "NOT EXIST!" << endl;
     else{
         cout << "EXIST: " << tmp->key << endl;
@@ -118,7 +172,22 @@ int main(){
     if (isBST(root)) cout << "is BST" << endl;
     else cout << "not BST" << endl;
 
-    deleteNode(root, 6);
-    cout << "DELETE LEAVE 6: ";
+    cout << endl;
+    bool isLeftChild = true;
+    TNode *parent = findParent(root, 17, isLeftChild);
+    if (parent != NULL){
+        cout << "parent of 17: " << parent->key << endl;
+        if (isLeftChild) cout << "isLeftChild" << endl;
+        else cout << "isRightChild" << endl;
+    }
+    else cout << "Parent Not Found!!!\n";
+
+    cout << endl;
+    TNode *maxLeft = findMostLeft(root);
+    cout << "mostleft Node of tree: " << maxLeft->key << endl;
+    
+    cout << endl;
+    deleteNode(root, 8);
+    cout << "Delete 8: ";
     preOder(root); cout << endl;
 }

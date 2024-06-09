@@ -18,7 +18,7 @@ void input(){
     for (int k = 1; k <= m; k++){
         int u, v, w;
         cin >> u >> v >> w;
-        pair<int, int> edge = pair{v, w};
+        pair<int, int> edge = {v, w};
         Adj[u].push_back(edge);// danh sách cạnh kề của đỉnh u
     }
     cin >> s >> t;

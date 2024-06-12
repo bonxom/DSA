@@ -7,6 +7,7 @@ using namespace std;
 int n,m, s;
 vector <pair<int, int>> Adj[MAX]; //mỗi phần tử trong mảng là 1 vector kiểu pair, lưu cạnh và trọng số của Adj[i];
 int d[MAX], p[MAX];
+int repeat[MAX];
 
 void input(){
     cin >> n >> m; //n dinh, m canh
@@ -27,6 +28,8 @@ void Initialize(){
         if (d[v] == 0) d[v] = INF;
     }
     p[s] = s; d[s] = 0;
+
+    memset(repeat, 1, sizeof(repeat));
 }
 
 void Relax(int u, int v, int w){
@@ -34,6 +37,7 @@ void Relax(int u, int v, int w){
         d[v] = d[u] + w;
         p[v] = u;
     }
+    else repeat[v] = 0;
 }
 
 int cnt = 0;
@@ -42,7 +46,7 @@ void Bellman_Ford(){
     for (int k = 1; k <= n - 1; k++){
         for (int u = 1; u <= n; u++){
             for (int v = 1; v <= n; v++){
-                if (v != s){
+                if (v != s && repeat[v]){
                     for (int i = 0; i < Adj[u].size(); i++){
                         if (v == Adj[u][i].first) Relax(u, v, Adj[u][i].second);
                         cnt++;

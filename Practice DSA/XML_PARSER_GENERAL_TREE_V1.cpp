@@ -198,7 +198,7 @@ TreeNode* getNode(char *str) {
 
     string tmp;
     ss >> tmp; // tmp = tagname
-        
+    char *nameTag = strdup(tmp.data());        
     TreeNode *result = create_tree_node(nameTag, text, NULL);
 
     char *nameAt, *valueAt;
